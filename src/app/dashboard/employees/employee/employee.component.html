@@ -1,0 +1,36 @@
+<form #employeeForm="ngForm"
+      [formGroup]="form"
+      (ngSubmit)="onSubmit($event)">
+  <fieldset>
+    <label for="name">Name</label>
+    <input formControlName="firstName"
+           id="name"
+           type="text">
+  </fieldset>
+
+  <fieldset>
+    <label for="lastname">Last Name</label>
+    <input formControlName="lastName"
+           id="lastname"
+           type="text">
+  </fieldset>
+
+  <fieldset>
+    <label for="birthday">Birthday</label>
+    <input formControlName="birthday"
+           id="birthday"
+           type="date">
+  </fieldset>
+
+  <fieldset>
+    <label for="project">Project</label>
+    <select name="project"
+            id="project">
+      <option value="1">1</option>
+    </select>
+  </fieldset>
+
+  <button type="submit"
+          [disabled]="!employeeForm.valid || !employeeForm.dirty">Save</button>
+  <button type="button" (click)="cancel.emit()">Cancel</button>
+</form>

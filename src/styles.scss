@@ -1,1 +1,59 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
+    'Lucida Sans', Arial, sans-serif;
+}
+
+a {
+  cursor: pointer;
+  color: dodgerblue;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &.active {
+    text-decoration: underline;
+    color: #125596;
+  }
+}
+
+.container {
+  max-width: 60em;
+  margin: auto;
+}
+
+form {
+  fieldset {
+    border: 0 none;
+    input, select {
+      padding: 0.3em;
+      font-size: 1em;
+      display: inline-block;
+      width: 15em;
+      border-radius: 3px;
+      border: 1px solid #333;
+    }
+    label {
+      display: inline-block;
+      width: 5em;
+      text-align: right;
+      margin-right: 0.5em;
+    }
+  }
+}
+
+button {
+  cursor: pointer;
+  border-radius: 3px;
+  display: inline-block;
+  font-size: 1em;
+  margin-right: 1em;
+  padding: .5em 1em;
+  &[disabled] {
+    opacity: .7;
+    cursor: default;
+    background: #ccc;
+    user-select: none;
+  }
+}

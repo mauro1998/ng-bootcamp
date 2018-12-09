@@ -1,1 +1,31 @@
 <h1>EMPLOYEES</h1>
+
+<app-employee *ngIf="showForm"
+              (cancel)="hideForm()"
+              (submit)="onSubmit($event)"
+              [isNew]="isNew"
+              [employee]="selectedEmployee"></app-employee>
+
+<button *ngIf="!showForm"
+        (click)="add()">Add New Employee</button>
+
+<br><br>
+
+<table *ngIf="employees$ | async as employees">
+  <thead>
+    <th>Name</th>
+    <th>Age</th>
+    <th>Birthday</th>
+    <th>Edit</th>
+    <th>Delete</th>
+  </thead>
+  <tbody>
+    <tr *ngFor="let employee of employees">
+      <td>{{employee.name}} {{employee.lastName}}</td>
+      <td>{{employee.age}}</td>
+      <td>{{employee.birthday}}</td>
+      <td><a (click)="edit(employee)">Edit</a></td>
+      <td><a (click)="delete(employee)">Delete</a></td>
+    </tr>
+  </tbody>
+</table>
