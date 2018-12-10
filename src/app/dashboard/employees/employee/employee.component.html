@@ -1,36 +1,44 @@
-<form #employeeForm="ngForm"
+<form class="form" #employeeForm="ngForm"
       [formGroup]="form"
       (ngSubmit)="onSubmit($event)">
-  <fieldset>
-    <label for="name">Name</label>
-    <input formControlName="firstName"
-           id="name"
-           type="text">
-  </fieldset>
+  <h1 mat-dialog-title>{{data ? 'Edit employee' : 'Add new employee'}}</h1>
+  <div mat-dialog-content>
+    <mat-form-field>
+      <input matInput
+             placeholder="First Name"
+             formControlName="firstName"
+             id="name"
+             type="text">
+    </mat-form-field>
 
-  <fieldset>
-    <label for="lastname">Last Name</label>
-    <input formControlName="lastName"
-           id="lastname"
-           type="text">
-  </fieldset>
+    <mat-form-field>
+      <input matInput
+             placeholder="Last Name"
+             formControlName="lastName"
+             id="lastname"
+             type="text">
+    </mat-form-field>
 
-  <fieldset>
-    <label for="birthday">Birthday</label>
-    <input formControlName="birthday"
-           id="birthday"
-           type="date">
-  </fieldset>
+    <mat-form-field>
+      <input matInput
+             placeholder="birthday"
+             formControlName="birthday"
+             id="birthday"
+             type="date">
+    </mat-form-field>
 
-  <fieldset>
-    <label for="project">Project</label>
-    <select name="project"
-            id="project">
-      <option value="1">1</option>
-    </select>
-  </fieldset>
-
-  <button type="submit"
-          [disabled]="!employeeForm.valid || !employeeForm.dirty">Save</button>
-  <button type="button" (click)="cancel.emit()">Cancel</button>
+    <!-- <mat-form-field>
+      <select name="project"
+              id="project">
+        <option value="1">1</option>
+      </select>
+    </mat-form-field> -->
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button
+            [mat-dialog-close]="false">Cancel</button>
+    <button mat-raised-button
+            color="primary"
+            [disabled]="!employeeForm.valid || !employeeForm.dirty">Save</button>
+  </div>
 </form>

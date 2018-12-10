@@ -1,0 +1,31 @@
+<form #projectForm="ngForm"
+      [formGroup]="form"
+      (ngSubmit)="onSubmit($event)">
+  <fieldset>
+    <label for="name">Name</label>
+    <input formControlName="name"
+           id="name"
+           type="text">
+  </fieldset>
+
+  <fieldset>
+    <label for="client-name">Client name</label>
+    <input formControlName="clientName"
+           id="client-name"
+           type="text">
+  </fieldset>
+
+  <fieldset>
+    <label for="add-employees">Add employees</label>
+    <input formControlName="addEmployees"
+           id="add-employees"
+           type="checkbox">
+  </fieldset>
+
+  <app-search-tool *ngIf="form.get('addEmployees').value"></app-search-tool>
+
+  <button type="submit"
+          [disabled]="!projectForm.valid || !projectForm.dirty">Save</button>
+  <button type="button"
+          (click)="cancel.emit()">Cancel</button>
+</form>

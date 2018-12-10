@@ -1,0 +1,24 @@
+:host {
+  display: block;
+  min-width: 900px;
+}
+
+mat-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10;
+  min-width: 900px;
+}
+
+main {
+  padding-top: 64px;
+}
+
+a.link {
+  color: #fff;
+  text-decoration: none;
+}

@@ -1,1 +1,31 @@
-<h1>PROJECTS</h1>
+<h3 class="mat-title">Manage Projects</h3>
+
+<app-project *ngIf="showForm"
+             (cancel)="hideForm()"
+             (submit)="onSubmit($event)"
+             [isNew]="isNew"
+             [project]="selectedProject"></app-project>
+
+<button *ngIf="!showForm"
+        (click)="add()">Add New project</button>
+
+<br><br>
+
+<table *ngIf="projects$ | async as projects">
+  <thead>
+    <th>Name</th>
+    <th>Size</th>
+    <th>Client Name</th>
+    <th>Edit</th>
+    <th>Delete</th>
+  </thead>
+  <tbody>
+    <tr *ngFor="let project of projects">
+      <td>{{project.name}}</td>
+      <td>{{project.size}}</td>
+      <td>{{project.clientName}}</td>
+      <td><a (click)="edit(project)">Edit</a></td>
+      <td><a (click)="delete(project)">Delete</a></td>
+    </tr>
+  </tbody>
+</table>

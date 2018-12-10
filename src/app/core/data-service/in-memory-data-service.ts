@@ -3,17 +3,32 @@ import {
   Employees,
   Employee,
 } from 'src/app/dashboard/employees/employee.interface';
+import { Projects } from 'src/app/dashboard/projects/project.interface';
 
 export class InMemoryDataService implements InMemoryDbService {
   createDb() {
     const employees: Employees = [];
 
     while (employees.length < 10) {
-      employees.push(this.getRandomEmployee());
+      employees.push(this.getRandomPerson());
     }
+
+    const projects: Projects = [];
+    ['Orion', 'Hydra', 'Loki', 'Taurus'].forEach(project => {
+      const client = this.getRandomPerson();
+
+      projects.push({
+        id: this.genId(),
+        name: project,
+        clientName: `${client.name} ${client.lastName}`,
+        size: 0,
+        employeeIds: [],
+      });
+    });
 
     return {
       employees,
+      projects,
     };
   }
 
@@ -27,7 +42,7 @@ export class InMemoryDataService implements InMemoryDbService {
     return s4() + s4() + s4() + s4();
   }
 
-  private getRandomEmployee(): Employee {
+  private getRandomPerson(): Employee {
     const rnd = items => items[Math.floor(Math.random() * items.length)];
     const names = [
       'Mateo',

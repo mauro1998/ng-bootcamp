@@ -1,59 +1,103 @@
-body {
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
-    'Lucida Sans', Arial, sans-serif;
-}
-
-a {
-  cursor: pointer;
-  color: dodgerblue;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-
-  &.active {
-    text-decoration: underline;
-    color: #125596;
-  }
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .container {
-  max-width: 60em;
-  margin: auto;
+  margin: 0 auto;
+  max-width: 1240px;
+  overflow: hidden;
+  width: 100%;
+  padding: 0 40px;
 }
 
-form {
-  fieldset {
-    border: 0 none;
-    input, select {
-      padding: 0.3em;
-      font-size: 1em;
-      display: inline-block;
-      width: 15em;
-      border-radius: 3px;
-      border: 1px solid #333;
-    }
-    label {
-      display: inline-block;
-      width: 5em;
-      text-align: right;
-      margin-right: 0.5em;
-    }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-transform: uppercase;
+  &.normal {
+    text-transform: none;
   }
 }
 
-button {
-  cursor: pointer;
-  border-radius: 3px;
-  display: inline-block;
-  font-size: 1em;
-  margin-right: 1em;
-  padding: .5em 1em;
-  &[disabled] {
-    opacity: .7;
-    cursor: default;
-    background: #ccc;
-    user-select: none;
-  }
+body,
+html {
+  height: 100%;
 }
+
+// body {
+//   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
+//     'Lucida Sans', Arial, sans-serif;
+// }
+
+// a {
+//   cursor: pointer;
+//   color: dodgerblue;
+//   text-decoration: none;
+
+//   &:hover {
+//     text-decoration: underline;
+//   }
+
+//   &.active {
+//     text-decoration: underline;
+//     color: #125596;
+//   }
+// }
+
+// form {
+//   fieldset {
+//     border: 0 none;
+//     input,
+//     select {
+//       padding: 0.3em;
+//       font-size: 1em;
+//       display: inline-block;
+//       width: 20em;
+//       border-radius: 3px;
+//       border: 1px solid #333;
+//     }
+//     label {
+//       display: inline-block;
+//       width: 8em;
+//       text-align: right;
+//       margin-right: 0.5em;
+//     }
+//   }
+// }
+
+// button {
+//   cursor: pointer;
+//   border-radius: 3px;
+//   display: inline-block;
+//   font-size: 1em;
+//   margin-right: 1em;
+//   padding: 0.5em 1em;
+//   &[disabled] {
+//     opacity: 0.7;
+//     cursor: default;
+//     background: #ccc;
+//     user-select: none;
+//   }
+// }
+
+// table {
+//   width: 100%;
+//   text-align: left;
+//   border-collapse: collapse;
+
+//   tr {
+//     border-bottom: 1px solid #eee;
+
+//     td {
+//       padding: 0.3em 0em;
+//     }
+//   }
+// }
+
+// html, body { height: 100%; }
+// body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

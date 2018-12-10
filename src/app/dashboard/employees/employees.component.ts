@@ -1,8 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Employees, Employee } from './employee.interface';
 import { HttpClient } from '@angular/common/http';
-import { switchMap, tap } from 'rxjs/operators';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import {
+  MatPaginator,
+  MatSort,
+  MatTableDataSource,
+  MatDialog,
+  MatSnackBar,
+} from '@angular/material';
+import { merge, Observable, Subject } from 'rxjs';
+import {
+  map,
+  shareReplay,
+  takeUntil,
+  withLatestFrom,
+  switchMap,
+  filter,
+  take,
+  tap,
+} from 'rxjs/operators';
+import { Employee, Employees } from './employee.interface';
+import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
+import { EmployeeComponent } from './employee/employee.component';
 
 @Component({
   selector: 'app-employees',
@@ -10,56 +28,160 @@ import { switchMap, tap } from 'rxjs/operators';
   styleUrls: ['./employees.component.scss'],
 })
 export class EmployeesComponent implements OnInit {
-  employees$: Observable<Employees>;
-  selectedEmployee: Employee;
-  isNew: boolean;
-  showForm: boolean;
+  source$: Observable<MatTableDataSource<Employee>>;
+  columns: string[];
 
-  constructor(private http: HttpClient) {}
+  employees$ = new Subject<Employees>();
+  paginator$ = new Subject();
+  sort$ = new Subject();
+  unsubscribe$ = new Subject();
 
-  ngOnInit() {
-    this.employees$ = this.getEmployees();
+  @ViewChild(MatPaginator)
+  set paginator(paginator) {
+    if (paginator) this.paginator$.next(paginator);
   }
 
-  getEmployees(): Observable<Employees> {
-    return this.http.get<Employees>('api/employees');
+  @ViewChild(MatSort)
+  set sort(sort) {
+    if (sort) this.sort$.next(sort);
+  }
+
+  @Input() actions: string[];
+
+  constructor(
+    private http: HttpClient,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+  ) {}
+
+  ngOnInit() {
+    this.columns = ['name', 'age', 'birthday', 'actions'];
+    this.source$ = this.employees$.pipe(
+      map((employees = []) => {
+        const source = new MatTableDataSource(employees);
+        return source;
+      }),
+      shareReplay(1),
+    );
+
+    merge(this.paginator$, this.sort$)
+      .pipe(
+        withLatestFrom(this.source$),
+        takeUntil(this.unsubscribe$),
+      )
+      .subscribe(
+        ([item, source]: [
+          MatPaginator | MatSort,
+          MatTableDataSource<Employee>
+        ]) => {
+          if (item instanceof MatPaginator) source.paginator = item;
+          else source.sort = item;
+        },
+      );
+
+    this.fetchEmployees();
+  }
+
+  fetchEmployees() {
+    this.http
+      .get<Employees>('api/employees')
+      .subscribe((employees: Employees) => {
+        this.employees$.next(employees);
+      });
   }
 
   add() {
-    this.isNew = true;
-    this.selectedEmployee = null;
-    this.showForm = true;
+    this.dialog
+      .open(EmployeeComponent, { data: null })
+      .afterClosed()
+      .pipe(
+        filter((employee: Employee) => !!employee),
+        take(1),
+      )
+      .subscribe((employee: Employee) => this.submit(employee));
   }
 
   edit(employee: Employee) {
-    this.isNew = false;
-    this.selectedEmployee = employee;
-    this.showForm = true;
+    this.dialog
+      .open(EmployeeComponent, { data: employee })
+      .afterClosed()
+      .pipe(
+        filter((employee: Employee) => !!employee),
+        take(1),
+      )
+      .subscribe((employee: Employee) => this.submit(employee));
   }
 
   delete(employee: Employee) {
-    this.hideForm();
-    this.employees$ = this.http
-      .delete(`api/employees/${employee.id}`)
-      .pipe(switchMap(() => this.getEmployees()));
+    const name = this.getShortName(employee);
+    const dialog = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Delete employee',
+        description: [
+          `You are about to delete the employee ${name}.`,
+          'Are you sure you want to proceed?',
+        ],
+      },
+    });
+
+    dialog
+      .afterClosed()
+      .pipe(
+        filter((confirm: boolean) => confirm),
+        take(1),
+        switchMap(() => this.http.delete(`api/employees/${employee.id}`)),
+      )
+      .subscribe(() => {
+        this.showSnackBar(`The employee ${name} has been deleted`);
+        this.fetchEmployees();
+      });
   }
 
-  hideForm() {
-    this.showForm = false;
-    this.selectedEmployee = null;
-    this.isNew = false;
-  }
+  submit(employee: Employee) {
+    const name = this.getShortName(employee);
 
-  onSubmit(employee: Employee) {
-    this.hideForm();
     let request$;
 
     if (!employee.id) {
-      request$ = this.http.post(`api/employees`, employee);
+      request$ = this.http
+        .post(`api/employees`, employee)
+        .pipe(
+          tap(() => this.showSnackBar(`The employee ${name} has been created`)),
+        );
     } else {
-      request$ = this.http.put(`api/employees/${employee.id}`, employee);
+      request$ = this.http
+        .put(`api/employees/${employee.id}`, employee)
+        .pipe(
+          tap(() => this.showSnackBar(`The employee ${name} has been updated`)),
+        );
     }
 
-    this.employees$ = request$.pipe(switchMap(() => this.getEmployees()));
+    request$.subscribe(() => this.fetchEmployees());
+  }
+
+  showSnackBar(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      horizontalPosition: 'right',
+      verticalPosition: 'bottom',
+    });
+  }
+
+  filter(source: MatTableDataSource<Employee>, value: string) {
+    source.filter = value.trim().toLowerCase();
+
+    if (source.paginator) {
+      source.paginator.firstPage();
+    }
+  }
+
+  getShortName(employee) {
+    const shift = str => str.split(' ').shift();
+    return `${shift(employee.name)} ${shift(employee.lastName)}`;
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

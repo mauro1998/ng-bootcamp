@@ -1,12 +1,7 @@
 import { DatePipe } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  Output,
-} from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { Employee } from '../employee.interface';
@@ -17,7 +12,7 @@ import { Employee } from '../employee.interface';
   styleUrls: ['./employee.component.scss'],
   providers: [DatePipe],
 })
-export class EmployeeComponent implements OnDestroy {
+export class EmployeeComponent implements OnInit {
   form: FormGroup;
   unsubscribe$ = new Subject();
   employeeDefaults: Employee = {
@@ -29,25 +24,26 @@ export class EmployeeComponent implements OnDestroy {
     projectId: null,
   };
 
-  @Output() cancel = new EventEmitter();
-  @Output() submit = new EventEmitter<Partial<Employee>>();
+  constructor(
+    private dialog: MatDialogRef<EmployeeComponent>,
+    @Inject(MAT_DIALOG_DATA) public employee: Employee,
+    private formBuilder: FormBuilder,
+    private datePipe: DatePipe,
+  ) {}
 
-  @Input() isNew: boolean;
-
-  @Input('employee')
-  set employeeChange(employee: Employee) {
-    if (!employee) employee = this.employeeDefaults;
+  ngOnInit() {
+    if (!this.employee) this.employee = this.employeeDefaults;
 
     this.form = this.formBuilder.group({
-      id: employee.id,
-      firstName: [employee.name, Validators.required],
-      lastName: [employee.lastName, Validators.required],
-      age: [employee.age, Validators.required],
+      id: this.employee.id,
+      firstName: [this.employee.name, Validators.required],
+      lastName: [this.employee.lastName, Validators.required],
+      age: [this.employee.age, Validators.required],
       birthday: [
-        this.datePipe.transform(employee.birthday, 'yyyy-MM-dd'),
+        this.datePipe.transform(this.employee.birthday, 'yyyy-MM-dd'),
         Validators.required,
       ],
-      projectId: employee.projectId,
+      projectId: this.employee.projectId,
     });
 
     this.form
@@ -64,8 +60,6 @@ export class EmployeeComponent implements OnDestroy {
       )
       .subscribe(age => this.form.get('age').setValue(age));
   }
-
-  constructor(private formBuilder: FormBuilder, private datePipe: DatePipe) {}
 
   fixDate(value) {
     const date = new Date(value);
@@ -85,7 +79,7 @@ export class EmployeeComponent implements OnDestroy {
       projectId: this.form.value.projectId,
     };
 
-    this.submit.emit(update);
+    this.dialog.close(update);
   }
 
   ngOnDestroy() {

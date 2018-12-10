@@ -1,31 +1,92 @@
-<h1>EMPLOYEES</h1>
+<h3 class="mat-title">Manage Employees</h3>
 
-<app-employee *ngIf="showForm"
-              (cancel)="hideForm()"
-              (submit)="onSubmit($event)"
-              [isNew]="isNew"
-              [employee]="selectedEmployee"></app-employee>
+<ng-container *ngIf="(source$ | async) as source">
+  <div class="grid">
+    <mat-form-field>
+      <input matInput
+             (keyup)="filter(source, $event.target.value)"
+             placeholder="Filter by name, age, birthday, etc">
+    </mat-form-field>
 
-<button *ngIf="!showForm"
-        (click)="add()">Add New Employee</button>
+    <div class="grid">
+      <h4 class="mat-body-strong">Add new</h4>
+      <button mat-mini-fab
+              (click)="add()"
+              color="primary">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  </div>
 
-<br><br>
+  <table mat-table
+         matSort
+         [dataSource]="source">
 
-<table *ngIf="employees$ | async as employees">
-  <thead>
-    <th>Name</th>
-    <th>Age</th>
-    <th>Birthday</th>
-    <th>Edit</th>
-    <th>Delete</th>
-  </thead>
-  <tbody>
-    <tr *ngFor="let employee of employees">
-      <td>{{employee.name}} {{employee.lastName}}</td>
-      <td>{{employee.age}}</td>
-      <td>{{employee.birthday}}</td>
-      <td><a (click)="edit(employee)">Edit</a></td>
-      <td><a (click)="delete(employee)">Delete</a></td>
+    <ng-container matColumnDef="name">
+      <th width="60%"
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header>
+        <h4 class="mat-body-strong">Name</h4>
+      </th>
+      <td mat-cell
+          *matCellDef="let employee">{{employee.name}} {{employee.lastName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="age">
+      <th width="10%"
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header>
+        <h4 class="mat-body-strong">Age</h4>
+      </th>
+      <td mat-cell
+          *matCellDef="let employee">{{employee.age}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="birthday">
+      <th width="30%"
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header>
+        <h4 class="mat-body-strong">Birthday</h4>
+      </th>
+      <td mat-cell
+          *matCellDef="let employee">{{employee.birthday}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell
+          *matHeaderCellDef>
+        <h4 class="mat-body-strong">Actions</h4>
+      </th>
+      <td mat-cell
+          *matCellDef="let employee">
+        <button mat-icon-button
+                [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item
+                  (click)="edit(employee)">
+            <mat-icon>edit</mat-icon>
+            <span>Edit</span>
+          </button>
+          <button mat-menu-item
+                  (click)="delete(employee)">
+            <mat-icon>close</mat-icon>
+            <span>Delete</span>
+          </button>
+        </mat-menu>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row
+        *matHeaderRowDef="columns"></tr>
+    <tr mat-row
+        *matRowDef="let employee; columns: columns;">
     </tr>
-  </tbody>
-</table>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 15]"></mat-paginator>
+</ng-container>

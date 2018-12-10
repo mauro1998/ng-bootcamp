@@ -10,19 +10,23 @@ const routes: Routes = [
     component: DashboardComponent,
     children: [
       {
+        path: '',
+        redirectTo: 'employees',
+      },
+      {
         path: 'employees',
-        component: EmployeesComponent
+        component: EmployeesComponent,
       },
       {
         path: 'projects',
-        component: ProjectsComponent
-      }
-    ]
-  }
+        component: ProjectsComponent,
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class DashboardRoutingModule {}

@@ -6,6 +6,9 @@ import { EmployeesComponent } from './employees/employees.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { EmployeeComponent } from './employees/employee/employee.component';
+import { ProjectComponent } from './projects/project/project.component';
+import { SearchToolComponent } from './projects/project/search-tool/search-tool.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -13,7 +16,15 @@ import { EmployeeComponent } from './employees/employee/employee.component';
     ProjectsComponent,
     EmployeesComponent,
     EmployeeComponent,
+    ProjectComponent,
+    SearchToolComponent,
   ],
-  imports: [CommonModule, ReactiveFormsModule, DashboardRoutingModule],
+  entryComponents: [EmployeeComponent],
+  imports: [
+    CommonModule,
+    SharedModule,
+    ReactiveFormsModule,
+    DashboardRoutingModule,
+  ],
 })
 export class DashboardModule {}
