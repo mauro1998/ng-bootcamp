@@ -11,15 +11,15 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'employees',
-      },
-      {
-        path: 'employees',
-        component: EmployeesComponent,
+        redirectTo: 'projects',
       },
       {
         path: 'projects',
         component: ProjectsComponent,
+      },
+      {
+        path: 'employees',
+        component: EmployeesComponent,
       },
     ],
   },

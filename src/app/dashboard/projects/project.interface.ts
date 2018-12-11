@@ -3,7 +3,7 @@ export interface Project {
   name: string;
   size: number;
   clientName: string;
-  employeeIds: number[];
+  employeeIds: string[];
 }
 
 export type Projects = Project[];

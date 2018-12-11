@@ -4,7 +4,6 @@ export interface Employee {
   lastName: string;
   age: number;
   birthday: string;
-  projectId?: string;
 }
 
 export type Employees = Employee[];

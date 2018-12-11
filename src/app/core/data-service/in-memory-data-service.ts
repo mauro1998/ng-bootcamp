@@ -9,7 +9,7 @@ export class InMemoryDataService implements InMemoryDbService {
   createDb() {
     const employees: Employees = [];
 
-    while (employees.length < 10) {
+    while (employees.length < 40) {
       employees.push(this.getRandomPerson());
     }
 
@@ -90,7 +90,6 @@ export class InMemoryDataService implements InMemoryDbService {
       name: rnd(names),
       lastName: `${first} ${second}`,
       birthday: this.getBirthDay(age),
-      projectId: null,
       age,
     };
   }

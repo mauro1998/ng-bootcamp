@@ -1,13 +1,10 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  Output,
-} from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, Inject, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Subject } from 'rxjs';
 import { Project } from '../project.interface';
+import { Employees } from '../../employees/employee.interface';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-project',
@@ -20,46 +17,62 @@ export class ProjectComponent implements OnDestroy {
   employeeDefaults: Project = {
     id: null,
     name: '',
-    clientName: '',
     size: 0,
+    clientName: '',
     employeeIds: [],
   };
 
-  @Output() cancel = new EventEmitter();
-  @Output() submit = new EventEmitter<Partial<Project>>();
+  constructor(
+    private dialog: MatDialogRef<ProjectComponent>,
+    @Inject(MAT_DIALOG_DATA) public project: Project,
+    private formBuilder: FormBuilder,
+  ) {}
 
-  @Input() isNew: boolean;
-
-  @Input('project')
-  set employeeChange(project: Project) {
-    if (!project) project = this.employeeDefaults;
+  ngOnInit() {
+    if (!this.project) this.project = this.employeeDefaults;
 
     this.form = this.formBuilder.group({
-      id: project.id,
-      name: [project.name, Validators.required],
-      clientName: [project.clientName, Validators.required],
-      size: project.size,
-      addEmployees: [true],
+      id: this.project.id,
+      name: [this.project.name, Validators.required],
+      size: [this.project.size, Validators.required],
+      clientName: [this.project.clientName, Validators.required],
+      employeeIds: this.formBuilder.array(this.project.employeeIds),
+      addEmployees: [!!this.project.employeeIds.length],
     });
   }
 
-  constructor(private formBuilder: FormBuilder) {}
+  onSelectionChange(employees: Employees = []) {
+    const ids = employees.map(({ id }) => id);
+    this.form.removeControl('employeeIds');
+    this.form.addControl('employeeIds', this.formBuilder.array(ids));
+    this.form.get('size').setValue(employees.length);
+  }
 
   onSubmit(e: Event) {
     e.stopPropagation();
 
-    const update = {
+    const update: Project = {
       id: this.form.value.id,
       name: this.form.value.name,
-      clientName: this.form.value.clientName,
       size: this.form.value.size,
+      clientName: this.form.value.clientName,
+      employeeIds: this.form.value.employeeIds,
     };
 
-    this.submit.emit(update);
+    this.dialog.close(update);
+  }
+
+  get isNew() {
+    return !this.project.id;
   }
 
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+  }
+
+  innerClick(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
   }
 }

@@ -1,7 +1,7 @@
 <form class="form" #employeeForm="ngForm"
       [formGroup]="form"
       (ngSubmit)="onSubmit($event)">
-  <h1 mat-dialog-title>{{data ? 'Edit employee' : 'Add new employee'}}</h1>
+  <h1 mat-dialog-title>{{isNew ? 'Add new employee' : 'Edit employee'}}</h1>
   <div mat-dialog-content>
     <mat-form-field>
       <input matInput

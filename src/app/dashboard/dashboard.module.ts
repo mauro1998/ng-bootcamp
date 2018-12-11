@@ -19,7 +19,7 @@ import { SharedModule } from '../shared/shared.module';
     ProjectComponent,
     SearchToolComponent,
   ],
-  entryComponents: [EmployeeComponent],
+  entryComponents: [EmployeeComponent, ProjectComponent],
   imports: [
     CommonModule,
     SharedModule,

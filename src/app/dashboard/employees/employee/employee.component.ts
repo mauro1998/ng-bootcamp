@@ -21,7 +21,6 @@ export class EmployeeComponent implements OnInit {
     lastName: '',
     age: null,
     birthday: null,
-    projectId: null,
   };
 
   constructor(
@@ -43,7 +42,6 @@ export class EmployeeComponent implements OnInit {
         this.datePipe.transform(this.employee.birthday, 'yyyy-MM-dd'),
         Validators.required,
       ],
-      projectId: this.employee.projectId,
     });
 
     this.form
@@ -70,16 +68,19 @@ export class EmployeeComponent implements OnInit {
   onSubmit(e: Event) {
     e.stopPropagation();
 
-    const update = {
+    const update: Employee = {
       id: this.form.value.id,
       name: this.form.value.firstName,
       lastName: this.form.value.lastName,
       age: this.form.value.age,
       birthday: this.fixDate(this.form.value.birthday).toDateString(),
-      projectId: this.form.value.projectId,
     };
 
     this.dialog.close(update);
+  }
+
+  get isNew() {
+    return !this.employee.id;
   }
 
   ngOnDestroy() {

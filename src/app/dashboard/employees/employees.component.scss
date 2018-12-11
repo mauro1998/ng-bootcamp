@@ -1,23 +1,12 @@
-table {
-  width: 100%;
-}
-
-.grid {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  h4 {
-    margin-right: 1em;
-  }
-}
-
-.mat-form-field {
-  width: 20em;
-}
-
 td.mat-cell:first-of-type,
 td.mat-footer-cell:first-of-type,
 th.mat-header-cell:first-of-type {
   padding-left: 0;
+}
+
+.list-container.gray {
+  table,
+  .mat-paginator {
+    background: #f5f5f5;
+  }
 }

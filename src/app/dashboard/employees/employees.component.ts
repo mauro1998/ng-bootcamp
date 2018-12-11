@@ -1,5 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  Input,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import {
   MatPaginator,
   MatSort,
@@ -17,10 +24,12 @@ import {
   filter,
   take,
   tap,
+  debounceTime,
 } from 'rxjs/operators';
 import { Employee, Employees } from './employee.interface';
 import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { EmployeeComponent } from './employee/employee.component';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-employees',
@@ -28,9 +37,10 @@ import { EmployeeComponent } from './employee/employee.component';
   styleUrls: ['./employees.component.scss'],
 })
 export class EmployeesComponent implements OnInit {
-  source$: Observable<MatTableDataSource<Employee>>;
   columns: string[];
+  selection: SelectionModel<Employee>;
 
+  source$: Observable<MatTableDataSource<Employee>>;
   employees$ = new Subject<Employees>();
   paginator$ = new Subject();
   sort$ = new Subject();
@@ -46,7 +56,13 @@ export class EmployeesComponent implements OnInit {
     if (sort) this.sort$.next(sort);
   }
 
-  @Input() actions: string[];
+  @Input() title = 'Manage Employees';
+  @Input() color;
+  @Input() showActions = true;
+  @Input() selectable = false;
+  @Input() selected: string[] = [];
+
+  @Output() selectionChange = new EventEmitter<Employees>();
 
   constructor(
     private http: HttpClient,
@@ -55,10 +71,38 @@ export class EmployeesComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.columns = ['name', 'age', 'birthday', 'actions'];
+    this.columns = ['name', 'age', 'birthday'];
+
+    if (this.selectable) {
+      this.selection = new SelectionModel<Employee>(true);
+      this.columns.unshift('select');
+      this.selection.changed
+        .pipe(
+          debounceTime(100),
+          takeUntil(this.unsubscribe$),
+        )
+        .subscribe(() => {
+          this.selectionChange.emit(this.selection.selected);
+        });
+    }
+
+    if (this.showActions) this.columns.push('actions');
+
+    this.initDataSource();
+  }
+
+  initDataSource() {
     this.source$ = this.employees$.pipe(
       map((employees = []) => {
         const source = new MatTableDataSource(employees);
+
+        if (this.selection) {
+          const selected = employees.filter(({ id }) =>
+            this.selected.includes(id),
+          );
+          this.selection.select(...selected);
+        }
+
         return source;
       }),
       shareReplay(1),
@@ -92,7 +136,7 @@ export class EmployeesComponent implements OnInit {
 
   add() {
     this.dialog
-      .open(EmployeeComponent, { data: null })
+      .open(EmployeeComponent, { data: null, width: '500px' })
       .afterClosed()
       .pipe(
         filter((employee: Employee) => !!employee),
@@ -103,7 +147,7 @@ export class EmployeesComponent implements OnInit {
 
   edit(employee: Employee) {
     this.dialog
-      .open(EmployeeComponent, { data: employee })
+      .open(EmployeeComponent, { data: employee, width: '500px' })
       .afterClosed()
       .pipe(
         filter((employee: Employee) => !!employee),
@@ -173,6 +217,18 @@ export class EmployeesComponent implements OnInit {
     if (source.paginator) {
       source.paginator.firstPage();
     }
+  }
+
+  isAllSelected(source: MatTableDataSource<Employee>) {
+    const numSelected = this.selection.selected.length;
+    const numRows = source.data.length;
+    return numSelected === numRows;
+  }
+
+  masterToggle(source: MatTableDataSource<Employee>) {
+    this.isAllSelected(source)
+      ? this.selection.clear()
+      : source.data.forEach(row => this.selection.select(row));
   }
 
   getShortName(employee) {

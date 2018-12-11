@@ -1,31 +1,44 @@
-<form #projectForm="ngForm"
+<form class="form"
+      #project="ngForm"
       [formGroup]="form"
       (ngSubmit)="onSubmit($event)">
-  <fieldset>
-    <label for="name">Name</label>
-    <input formControlName="name"
-           id="name"
-           type="text">
-  </fieldset>
+  <div mat-dialog-content>
+    <h1 mat-dialog-title>{{isNew ? 'Add new project' : 'Edit project'}}</h1>
+    <mat-form-field>
+      <input matInput
+             placeholder="Project Name"
+             formControlName="name"
+             type="text">
+    </mat-form-field>
 
-  <fieldset>
-    <label for="client-name">Client name</label>
-    <input formControlName="clientName"
-           id="client-name"
-           type="text">
-  </fieldset>
+    <mat-form-field>
+      <input matInput
+             placeholder="Client Name"
+             formControlName="clientName"
+             type="text">
+    </mat-form-field>
 
-  <fieldset>
-    <label for="add-employees">Add employees</label>
-    <input formControlName="addEmployees"
-           id="add-employees"
-           type="checkbox">
-  </fieldset>
+    <mat-checkbox class="example-margin"
+                  formControlName="addEmployees"
+                  labelPosition="after">
+      Add employees
+    </mat-checkbox>
 
-  <app-search-tool *ngIf="form.get('addEmployees').value"></app-search-tool>
-
-  <button type="submit"
-          [disabled]="!projectForm.valid || !projectForm.dirty">Save</button>
-  <button type="button"
-          (click)="cancel.emit()">Cancel</button>
+    <div class="employees-panel"
+         *ngIf="project.value.addEmployees">
+      <app-employees [title]="'Add employees to project ' + project.value.name"
+                     [color]="'gray'"
+                     [showActions]="false"
+                     [selectable]="true"
+                     [selected]="project.value.employeeIds"
+                     (selectionChange)="onSelectionChange($event)"></app-employees>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button
+            [mat-dialog-close]="false">Cancel</button>
+    <button mat-raised-button
+            color="primary"
+            [disabled]="!project.valid">Save</button>
+  </div>
 </form>

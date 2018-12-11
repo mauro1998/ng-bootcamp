@@ -1,6 +1,6 @@
 <div class="dashboard-container">
   <mat-toolbar>
-    <h2>Dashboard</h2>
+    <h2>Management Board</h2>
   </mat-toolbar>
   <mat-sidenav-container class="example-container">
     <mat-sidenav mode="side"
@@ -11,15 +11,15 @@
       <div class="container">
         <nav mat-tab-nav-bar>
           <a mat-tab-link
-             routerLink="employees"
-             routerLinkActive
-             #tab2="routerLinkActive"
-             [active]="tab2.isActive">Employees</a>
-          <a mat-tab-link
              routerLink="projects"
              routerLinkActive
              #tab1="routerLinkActive"
              [active]="tab1.isActive">Projects</a>
+          <a mat-tab-link
+             routerLink="employees"
+             routerLinkActive
+             #tab2="routerLinkActive"
+             [active]="tab2.isActive">Employees</a>
         </nav>
 
         <router-outlet></router-outlet>
