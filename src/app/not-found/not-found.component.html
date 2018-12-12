@@ -1,7 +1,14 @@
-<h1>404 Error</h1>
+<div class="container">
+  <h1 class="mat-title">404 Error</h1>
 
-<p>THE REQUESTED PAGE WAS NOT FOUND</p>
+  <p class="mat-body">
+    The requested page was not found.<br />
+    Make sure you enter a valid url.
+  </p>
 
-<ng-container *ngIf="countdown$ | async as countdown">
-  <p>Redirecting to home in {{countdown}} seconds</p>
-</ng-container>
+  <ng-container *ngIf="(countdown$ | async) as countdown">
+    <br>
+    <br>
+    <p class="mat-title">Redirecting to home in {{ countdown }} seconds</p>
+  </ng-container>
+</div>

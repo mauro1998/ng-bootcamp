@@ -3,11 +3,13 @@ import { AuthService } from 'src/app/core/auth/auth.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-signin',
   templateUrl: './signin.component.html',
-  styleUrls: ['./signin.component.scss'],
+  styleUrls: ['./signin.component.scss']
 })
 export class SigninComponent {
   processing = false;
@@ -15,76 +17,65 @@ export class SigninComponent {
 
   signInForm: FormGroup = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required]],
+    password: ['', [Validators.required]]
   });
 
   constructor(
     private snackBar: MatSnackBar,
     private authService: AuthService,
     private formBuilder: FormBuilder,
-    private router: Router,
+    private router: Router
   ) {}
 
   showSnackBar(message: string, duration = 8000) {
     this.snackBar.open(message, 'Close', {
       horizontalPosition: 'center',
       verticalPosition: 'bottom',
-      duration,
+      duration
     });
   }
 
   signIn(value) {
     this.processing = true;
-    this.authService.signIn(value).then(
-      res => {
-        console.log(res);
-        this.redirecting = true;
-        setTimeout(() => this.router.navigate(['/dashboard']), 2000);
-      },
-      err => {
-        console.log(err);
-        if (err.code === 'auth/user-not-found') {
-          this.showSnackBar(
-            'User not found. Please make sure you entered valid credentials',
-          );
+    this.authService
+      .signIn(value)
+      .pipe(
+        catchError(err => {
+          this.processing = false;
+          return of(err);
+        })
+      )
+      .subscribe(res => {
+        if (res && res.message) {
+          if (res.code === 'auth/user-not-found') {
+            this.showSnackBar(
+              'User not found. Please make sure you entered valid credentials'
+            );
+          } else {
+            this.showSnackBar(res.message);
+          }
         } else {
-          this.showSnackBar(err.message);
+          this.router.navigate(['/dashboard']);
         }
-
-        this.processing = false;
-      },
-    );
+      });
   }
 
   signInGoogle() {
     this.processing = true;
-    this.authService.googleLogin().then(
-      res => {
-        console.log(res);
-        this.redirecting = true;
-        setTimeout(() => this.router.navigate(['/dashboard']), 2000);
-      },
-      err => {
-        console.log(err);
-        this.showSnackBar(err.message);
-        this.processing = false;
-      },
-    );
-  }
-
-  signInFacebook() {
-    this.processing = true;
-    this.authService.facebookLogin().then(
-      res => {
-        console.log(res);
-        this.redirecting = true;
-        setTimeout(() => this.router.navigate(['/dashboard']), 2000);
-      },
-      err => {
-        console.log(err);
-        this.showSnackBar(err.message);
-        this.processing = false;
-      },
-    );
+    this.authService
+      .signInWithGoogle()
+      .pipe(
+        catchError(err => {
+          this.processing = false;
+          return of(err);
+        })
+      )
+      .subscribe(res => {
+        if (res && res.message) {
+          this.showSnackBar(res.message);
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
+      });
   }
 }

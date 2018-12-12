@@ -1,33 +1,43 @@
-<app-header></app-header>
-
 <div class="dashboard-container">
-  <mat-toolbar>
-    <h2>Management Board</h2>
-  </mat-toolbar>
+  <mat-toolbar> <h2>Management Board</h2> </mat-toolbar>
   <mat-sidenav-container class="example-container">
-    <mat-sidenav mode="side"
-                 opened>
+    <mat-sidenav mode="side" opened>
+      <p *ngIf="(user$ | async) as user" class="mat-body intro">
+        Welcome <strong>{{ user.name }}</strong
+        >. <br />
+        This is the dashboard panel where you can easily manage your content.
+      </p>
+
+      <h3 class="mat-subheading-2">Navigation panel</h3>
+      <mat-divider></mat-divider>
+      <a class="link mat-body" routerLink="projects">Manage projects</a>
+      <mat-divider></mat-divider>
+      <a class="link mat-body" routerLink="employees">Manage employees</a>
+      <mat-divider></mat-divider>
     </mat-sidenav>
     <mat-sidenav-content class="scrollable">
-
       <div class="container">
         <nav mat-tab-nav-bar>
-          <a mat-tab-link
-             routerLink="projects"
-             routerLinkActive
-             #tab1="routerLinkActive"
-             [active]="tab1.isActive">Projects</a>
-          <a mat-tab-link
-             routerLink="employees"
-             routerLinkActive
-             #tab2="routerLinkActive"
-             [active]="tab2.isActive">Employees</a>
+          <a
+            mat-tab-link
+            routerLink="projects"
+            routerLinkActive
+            #tab1="routerLinkActive"
+            [active]="tab1.isActive"
+            >Projects</a
+          >
+          <a
+            mat-tab-link
+            routerLink="employees"
+            routerLinkActive
+            #tab2="routerLinkActive"
+            [active]="tab2.isActive"
+            >Employees</a
+          >
         </nav>
 
         <router-outlet></router-outlet>
       </div>
-
-
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>

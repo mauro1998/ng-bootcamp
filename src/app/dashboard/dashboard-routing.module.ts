@@ -3,30 +3,32 @@ import { DashboardComponent } from './dashboard.component';
 import { EmployeesComponent } from './employees/employees.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { Routes, RouterModule } from '@angular/router';
+import { AuthGuard } from '../core/auth/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
-        redirectTo: 'projects',
+        redirectTo: 'projects'
       },
       {
         path: 'projects',
-        component: ProjectsComponent,
+        component: ProjectsComponent
       },
       {
         path: 'employees',
-        component: EmployeesComponent,
-      },
-    ],
-  },
+        component: EmployeesComponent
+      }
+    ]
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
 export class DashboardRoutingModule {}

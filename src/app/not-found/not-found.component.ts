@@ -10,7 +10,7 @@ import { last, map, switchMap, take } from 'rxjs/operators';
 })
 export class NotFoundComponent implements OnInit {
   countdown$: Observable<number>;
-  timeout = 5;
+  timeout = 3;
 
   constructor(public router: Router) {}
 

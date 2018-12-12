@@ -59,9 +59,7 @@ table td.actions {
 a.link {
   cursor: pointer;
   color: darken(dodgerblue, 20%);
-  text-decoration: underline;
-  text-decoration-color: darken(dodgerblue, 20%);
-  letter-spacing: 0.5px;
+  text-decoration: none;
   &:hover {
     color: dodgerblue;
   }

@@ -14,6 +14,7 @@ import {
   MatDialogModule,
   MatSnackBarModule,
   MatCardModule,
+  MatListModule
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 
@@ -34,10 +35,11 @@ const modules = [
   MatSnackBarModule,
   MatFormFieldModule,
   MatCardModule,
+  MatListModule
 ];
 
 @NgModule({
   imports: modules,
-  exports: modules,
+  exports: modules
 })
 export class MaterialModule {}
