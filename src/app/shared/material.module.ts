@@ -13,6 +13,7 @@ import {
   MatMenuModule,
   MatDialogModule,
   MatSnackBarModule,
+  MatCardModule,
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 
@@ -32,6 +33,7 @@ const modules = [
   MatDialogModule,
   MatSnackBarModule,
   MatFormFieldModule,
+  MatCardModule,
 ];
 
 @NgModule({

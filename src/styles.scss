@@ -55,3 +55,14 @@ table {
 table td.actions {
   text-align: center;
 }
+
+a.link {
+  cursor: pointer;
+  color: darken(dodgerblue, 20%);
+  text-decoration: underline;
+  text-decoration-color: darken(dodgerblue, 20%);
+  letter-spacing: 0.5px;
+  &:hover {
+    color: dodgerblue;
+  }
+}

@@ -1,0 +1,17 @@
+<mat-toolbar class="mat-elevation-z5"
+             color="primary">
+
+  <a mat-button
+     class="link"
+     (click)="navigate('/')">
+    <h1>{{title}}</h1>
+  </a>
+
+  <div class="actions">
+    <a mat-button
+       *ngFor="let link of links"
+       (click)="navigate(link.route)">
+      {{link.text}}
+    </a>
+  </div>
+</mat-toolbar>
